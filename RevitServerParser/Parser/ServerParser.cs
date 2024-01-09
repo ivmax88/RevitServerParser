@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using RevitServerParser.Models;
-using RevitServerParser.RevitServerModels;
+﻿using RevitServerParser.Models;
 
 namespace RevitServerParser.Parser
 {
@@ -22,7 +16,7 @@ namespace RevitServerParser.Parser
             this.client = client;
         }
 
-        public async Task<RevitServer?> ParseServer(CancellationToken cancellationToken = default)
+        public async Task<RevitServer?> ParseServer(int maxFolderLevel = 1, CancellationToken cancellationToken = default)
         {
             var baseFolder = await client.GetFolderContent(Host, Year, cancellationToken: cancellationToken);
 
@@ -34,7 +28,7 @@ namespace RevitServerParser.Parser
 
             var result = new RevitServer(Host, Year);
             result.Models.AddRange(models.Select(x => new Model(x.Name)));
-            result.Folders.AddRange(folders.Select(x=> new Folder(x.Name)));
+            result.Folders.AddRange(folders.Select(x => new Folder(x.Name)));
 
             var stack = new Stack<Folder>(result.Folders);
 
@@ -49,9 +43,17 @@ namespace RevitServerParser.Parser
                     folders = content.Folders ?? [];
                     models = content.Models ?? [];
                     folder.Models.AddRange(models.Select(x => new Model(x.Name, folder)));
-                    folder.Folders.AddRange(folders.Select(x => new Folder(x.Name, folder)));
+
+                    if (folder.FolderLevel + 1 <= maxFolderLevel)
+                    {
+                        folder.Folders.AddRange(folders.Select(x => new Folder(x.Name, folder, folder.FolderLevel + 1)));
+                    }
+
                     foreach (var f in folder.Folders)
+                    {
+                        if (f.FolderLevel > maxFolderLevel) continue;
                         stack.Push(f);
+                    }
                 }
 
             }
@@ -59,6 +61,6 @@ namespace RevitServerParser.Parser
             return result;
         }
 
-        
+
     }
 }
