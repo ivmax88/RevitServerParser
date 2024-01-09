@@ -1,17 +1,31 @@
-﻿namespace RevitServerParser.Models
+﻿using System.Text.Json.Serialization;
+
+namespace RevitServerParser.Models
 {
     public class Folder
     {
+        [JsonIgnore]
+        internal Folder? Parent { get; }
         public int FolderLevel { get; }
-        public Folder? Parent { get; }
         public string? Name { get; }
         public List<Model> Models { get; } = [];
         public List<Folder> Folders { get; } = [];
-        public Folder(string? name, Folder? parent = null, int level = 0)
+
+        internal Folder(string? name, Folder? parent = null, int level = 0)
         {
             Name = name;
             Parent = parent;
             FolderLevel = level;
+        }
+
+        [JsonConstructor]
+        public Folder(string? name, int folderLevel,
+             List<Folder> folders, List<Model> models)
+        {
+            Name = name;
+            FolderLevel = folderLevel;
+            Folders = folders;
+            Models = models;
         }
 
         internal string GetPath()

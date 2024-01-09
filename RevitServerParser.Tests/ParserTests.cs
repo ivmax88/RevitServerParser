@@ -1,4 +1,7 @@
-﻿using RevitServerParser.Parser;
+﻿using System.Text.Json;
+using System.Text.Json.Serialization;
+using RevitServerParser.Models;
+using RevitServerParser.Parser;
 
 namespace RevitServerParser.Tests
 {
@@ -18,6 +21,10 @@ namespace RevitServerParser.Tests
             var server = await parser.ParseServer(2);
 
             Assert.That(server, Is.Not.Null);
+
+            var json = JsonSerializer.Serialize(server);
+
+            server = JsonSerializer.Deserialize<RevitServer>(json);
         }
     }
 }
