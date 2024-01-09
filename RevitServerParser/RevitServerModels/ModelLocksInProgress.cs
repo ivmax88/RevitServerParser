@@ -1,4 +1,6 @@
-﻿namespace RevitServerParser.RevitServerModels
+﻿using System.Text.Json.Serialization;
+
+namespace RevitServerParser.RevitServerModels
 {
     public class ModelLocksInProgress
     {
@@ -6,7 +8,7 @@
         public int ModelLockOptions { get; set; }
         public int ModelLockType { get; set; }
         public string? ModelPath { get; set; }
-        public string? TimeStamp { get; set; }
+        [JsonConverter(typeof(DateTimeConverter))] public DateTime? TimeStamp { get; set; }
         public string? UserName { get; set; }
     }
 }

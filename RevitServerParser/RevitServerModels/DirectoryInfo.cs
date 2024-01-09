@@ -1,10 +1,12 @@
-﻿namespace RevitServerParser.RevitServerModels
+﻿using System.Text.Json.Serialization;
+
+namespace RevitServerParser.RevitServerModels
 {
     public class DirectoryInfo
     {
         public string? Path { get; set; }
-        public string? DateCreated { get; set; }
-        public string? DateModified { get; set; }
+        [JsonConverter(typeof(DateTimeConverter))]public DateTime? DateCreated { get; set; }
+        [JsonConverter(typeof(DateTimeConverter))]public DateTime? DateModified { get; set; }
         public bool Exists { get; set; }
         public int FolderCount { get; set; }
         public bool IsFolder { get; set; }

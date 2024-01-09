@@ -1,9 +1,11 @@
-﻿namespace RevitServerParser.RevitServerModels
+﻿using System.Text.Json.Serialization;
+
+namespace RevitServerParser.RevitServerModels
 {
     public class HistoryItem
     {
         public string? Comment { get; set; }
-        public string? Date { get; set; }
+        [JsonConverter(typeof(DateTimeConverter))]public DateTime? Date { get; set; }
         public long ModelSize { get; set; }
         public int OverwrittenByHistoryNumber { get; set; }
         public long SupportSize { get; set; }

@@ -1,0 +1,34 @@
+﻿using System.Text.Json;
+using System.Text.Json.Serialization;
+using System.Text.RegularExpressions;
+
+namespace RevitServerParser
+{
+    public class DateTimeConverter : JsonConverter<DateTime?>
+    {
+        public override DateTime? Read(
+            ref Utf8JsonReader reader,
+            Type typeToConvert,
+            JsonSerializerOptions options)
+        {
+            var str = reader.GetString()!;
+            var r = new Regex(@"\d*");
+            var mc = r.Matches(str);
+            if(mc.Count==0)
+                return null;
+            if (long.TryParse(mc.FirstOrDefault(x=>x.Length>0)?.Value, out long tiks))
+            {
+                var d = new DateTime(1970, 1, 1);
+                return d.AddMilliseconds(tiks);
+            }
+            return null;
+        }
+        public override void Write(
+            Utf8JsonWriter writer,
+            DateTime? dateTimeValue,
+            JsonSerializerOptions options)
+        {
+            writer.WriteStringValue(dateTimeValue.ToString());
+        }
+    }
+}
