@@ -25,6 +25,9 @@ namespace RevitServerParser.Tests
             var json = JsonSerializer.Serialize(server);
 
             server = JsonSerializer.Deserialize<RevitServer>(json);
+
+            Assert.That(server, Is.Not.Null);
+            Assert.That(server.Folders, Is.Not.Empty);
         }
     }
 }
