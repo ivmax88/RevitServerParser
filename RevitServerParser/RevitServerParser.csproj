@@ -9,6 +9,18 @@
     <Authors>ivmax88</Authors>
     <Description>Models to parse Revit Server</Description>
     <RepositoryUrl>https://github.com/ivmax88/RevitServerParser</RepositoryUrl>
+    <PackageOutputPath>\\DISKSTATION\Производство\Ревит\REVIT_SETUP\12_Автоматизация\olp.nuget\olp.RevitServerParser</PackageOutputPath>
+    <PackageId>olp.$(AssemblyName)</PackageId>
+    <Product>olp.$(AssemblyName)</Product>
+    <PackageTags>Olimproekt; olp</PackageTags>
+    <PackageReadmeFile>Readme.md</PackageReadmeFile>
   </PropertyGroup>
+
+  <ItemGroup>
+    <None Update="pack\Readme.md">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+  </ItemGroup>
 
 </Project>
