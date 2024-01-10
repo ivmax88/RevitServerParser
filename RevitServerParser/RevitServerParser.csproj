@@ -4,6 +4,10 @@
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+    <Title>Models to parse Revit Server</Title>
+    <Authors>ivmax88</Authors>
+    <Description>Models to parse Revit Server</Description>
   </PropertyGroup>
 
 </Project>
