@@ -11,6 +11,7 @@
     <RepositoryUrl>https://github.com/ivmax88/RevitServerParser</RepositoryUrl>
     <PackageOutputPath>\\DISKSTATION\Производство\Ревит\REVIT_SETUP\12_Автоматизация\olp.nuget\olp.RevitServerParser</PackageOutputPath>
     <PackageId>olp.$(AssemblyName)</PackageId>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <Product>olp.$(AssemblyName)</Product>
     <PackageTags>Olimproekt; olp</PackageTags>
     <PackageReadmeFile>Readme.md</PackageReadmeFile>
