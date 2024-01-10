@@ -37,7 +37,7 @@ namespace RevitServerParser.Parser
                 var folder = stack.Pop();
                 string path = folder.GetPath();
 
-                var content = await client.GetFolderContent(Host, Year, path, cancellationToken);
+                var content = await client.GetFolderContent(Host, Year, path, cancellationToken).ConfigureAwait(false);
                 if (content != null)
                 {
                     folders = content.Folders ?? [];
@@ -60,7 +60,5 @@ namespace RevitServerParser.Parser
 
             return result;
         }
-
-
     }
 }
