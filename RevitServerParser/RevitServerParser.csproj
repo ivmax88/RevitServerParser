@@ -8,6 +8,7 @@
     <Title>Models to parse Revit Server</Title>
     <Authors>ivmax88</Authors>
     <Description>Models to parse Revit Server</Description>
+    <RepositoryUrl>https://github.com/ivmax88/RevitServerParser</RepositoryUrl>
   </PropertyGroup>
 
 </Project>
