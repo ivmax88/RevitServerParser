@@ -1,17 +1,25 @@
+using System.Text.Json.Serialization;
 using Microsoft.Extensions.Options;
 using RevitServersService;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.ConfigureHttpJsonOptions(opt =>
+{
+    opt.SerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
+});
 
-builder.Services.AddOptions<List<RevitServer>>()
+builder.Services.AddSwaggerGen();
+builder.Services.AddHttpClient();
+
+builder.Services.AddOptions<List<RevitServerOpt>>()
     .Bind(builder.Configuration.GetSection("RevitServers"))
     .ValidateDataAnnotations()
     .ValidateOnStart();
+
+builder.Services.AddSingleton<ParseResultService>();
+builder.Services.AddHostedService<ServersParserHostedService>();
 
 var app = builder.Build();
 
@@ -25,11 +33,59 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 
-app.MapGet("/test", (IOptionsMonitor<List<RevitServer>> options) =>
+app.MapGet("/test", (IOptionsMonitor<List<RevitServerOpt>> options) =>
 {
     return options.CurrentValue;
 })
 .WithName("Test")
 .WithOpenApi();
+
+app.MapGet("/getall", (ParseResultService service) =>
+{
+    return service.GetAll();
+})
+.WithName("GetAll")
+.WithOpenApi();
+
+
+app.MapGet("/get/{year}", (int year, ParseResultService service) =>
+{
+    return service.Get(year);
+})
+.WithName("GetByYear")
+.WithOpenApi();
+
+
+app.MapGet("/get/{host}", (string host, ParseResultService service) =>
+{
+    return service.Get(host);
+})
+.WithName("GetByHost")
+.WithOpenApi();
+
+
+app.MapGet("/getProjects/{name}", (string name, ParseResultService service) =>
+{
+    return service.GetProjectByName(name);
+})
+.WithName("GetProjectByName")
+.WithOpenApi();
+
+
+app.MapGet("/getFolders/{name}", (string name, ParseResultService service) =>
+{
+    return service.GetAllFoldersByName(name);
+})
+.WithName("GetAllFoldersByName")
+.WithOpenApi();
+
+
+app.MapGet("/getModels/{name}", (string name, ParseResultService service) =>
+{
+    return service.GetAllModelsByName(name);
+})
+.WithName("GetAllModelsByName")
+.WithOpenApi();
+
 
 app.Run();

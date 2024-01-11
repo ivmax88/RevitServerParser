@@ -2,7 +2,7 @@
 
 namespace RevitServersService
 {
-    public class RevitServer
+    public class RevitServerOpt
     {
         [Required] public int Year { get; set; } = 0;
         [Required] public List<string> Hosts { get; set; } = [];
