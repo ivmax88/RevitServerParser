@@ -1,4 +1,6 @@
 using System.Text.Json.Serialization;
+using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.Http;
 using Microsoft.Extensions.Options;
 using RevitServersService;
 
@@ -11,7 +13,10 @@ builder.Services.ConfigureHttpJsonOptions(opt =>
 });
 
 builder.Services.AddSwaggerGen();
-builder.Services.AddHttpClient();
+builder.Services.AddHttpClient().ConfigureHttpClientDefaults(b =>
+{
+    b.RemoveAllLoggers();
+});
 
 builder.Services.AddOptions<List<RevitServerOpt>>()
     .Bind(builder.Configuration.GetSection("RevitServers"))
@@ -23,12 +28,9 @@ builder.Services.AddHostedService<ServersParserHostedService>();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+
+app.UseSwagger();
+app.UseSwaggerUI();
 
 app.UseHttpsRedirection();
 
@@ -40,6 +42,7 @@ app.MapGet("/test", (IOptionsMonitor<List<RevitServerOpt>> options) =>
 .WithName("Test")
 .WithOpenApi();
 
+
 app.MapGet("/getall", (ParseResultService service) =>
 {
     return service.GetAll();
@@ -48,7 +51,7 @@ app.MapGet("/getall", (ParseResultService service) =>
 .WithOpenApi();
 
 
-app.MapGet("/get/{year}", (int year, ParseResultService service) =>
+app.MapGet("/get-year/{year}", (int year, ParseResultService service) =>
 {
     return service.Get(year);
 })
@@ -56,7 +59,7 @@ app.MapGet("/get/{year}", (int year, ParseResultService service) =>
 .WithOpenApi();
 
 
-app.MapGet("/get/{host}", (string host, ParseResultService service) =>
+app.MapGet("/get-host/{host}", (string host, ParseResultService service) =>
 {
     return service.Get(host);
 })
@@ -87,5 +90,36 @@ app.MapGet("/getModels/{name}", (string name, ParseResultService service) =>
 .WithName("GetAllModelsByName")
 .WithOpenApi();
 
+
+app.MapGet("/getModelHistory/{host}/{year}/{path}",async (string host, int year, string path, 
+    ParseResultService service, CancellationToken token) =>
+{
+    try
+    {
+        return Results.Ok(await service.GetModelHistory(host, year, path, token));
+    }
+    catch (Exception e)
+    {
+        return Results.Problem(e.Message, statusCode: 500);
+    }
+})
+.WithName("GetModelHistory")
+.WithOpenApi();
+
+
+app.MapGet("/getModelInfo/{host}/{year}/{path}", async (string host, int year, string path,
+    ParseResultService service, CancellationToken token) =>
+{
+    try
+    {
+        return Results.Ok(await service.GetModelInfo(host, year, path, token));
+    }
+    catch (Exception e)
+    {
+        return Results.Problem(e.Message, statusCode: 500);
+    }
+})
+.WithName("GetModelInfo")
+.WithOpenApi();
 
 app.Run();

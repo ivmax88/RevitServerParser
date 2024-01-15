@@ -1,14 +1,20 @@
-﻿using RevitServerParser.Models;
+﻿using System.Reflection.Metadata;
+using RevitServerParser;
+using RevitServerParser.Models;
+using RevitServerParser.RevitServerModels;
 
 namespace RevitServersService
 {
     public class ParseResultService
     {
         private List<ParseResult> results = [];
+        private readonly ILogger<ParseResultService> logger;
+        private readonly HttpClient client;
 
-        public ParseResultService()
+        public ParseResultService(ILogger<ParseResultService> logger, HttpClient client)
         {
-            
+            this.logger = logger;
+            this.client = client;
         }
 
         public void Add(ParseResult result)
@@ -68,6 +74,28 @@ namespace RevitServersService
 
             return results.Last().Servers.SelectMany(s => s.Folders).SelectMany(GetAllModels)
                 .Where(f => f.Name == modelName);
+        }
+
+        public async Task<History> GetModelHistory(string host, int year, string path, CancellationToken token)
+        {
+            if(!path.ToUpper().EndsWith(".RVT"))
+                throw new ArgumentException("Path must be end with .rvt", nameof(path));
+
+            if (host  == null || path == null || year < 2015)
+                return new History();
+
+            return await client.GetHistory(host, year, path, token) ?? new History();
+        }
+
+        public async Task<Modelnfo> GetModelInfo(string host, int year, string path, CancellationToken token)
+        {
+            if (!path.ToUpper().EndsWith(".RVT"))
+                throw new ArgumentException("Path must be end with .rvt", nameof(path));
+
+            if (host == null || path == null || year < 2015)
+                return new Modelnfo();
+
+            return await client.GetModelInfo(host, year, path, token) ?? new Modelnfo();
         }
 
         private IEnumerable<Folder> GetAllFolders(Folder folder)

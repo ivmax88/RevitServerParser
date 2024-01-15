@@ -19,8 +19,4 @@
     <PackageReference Include="olp.RevitServerParser" Version="1.0.0" />
   </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\RevitServersService\RevitServersService.csproj" />
-  </ItemGroup>
-
 </Project>
