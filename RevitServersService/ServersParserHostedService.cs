@@ -73,7 +73,7 @@ internal class ServersParserHostedService : BackgroundService
 
         var parsers = tempServers.Select(s => new ServerParser(s.host, s.year, _client)).ToList();
 
-        var tasks = parsers.Select(x => x.ParseServer(cancellationToken: stoppingToken)).ToList();
+        var tasks = parsers.Select(x => x.ParseServer(3, stoppingToken)).ToList();
 
         await Task.WhenAll(tasks);
 
