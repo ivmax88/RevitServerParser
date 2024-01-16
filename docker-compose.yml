@@ -1,0 +1,8 @@
+version: '3.4'
+
+services:
+  revitserversservice:
+    image: ${DOCKER_REGISTRY-}revitserversservice
+    build:
+      context: .
+      dockerfile: RevitServersService/Dockerfile

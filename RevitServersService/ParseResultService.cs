@@ -55,7 +55,7 @@ namespace RevitServersService
             if (results.Count == 0)
                 return Enumerable.Empty<Folder>();
 
-            return results.Last().Servers.SelectMany(x=>x.Folders).Where(x=>x.Name == projectName);
+            return results.Last().Servers.SelectMany(x=>x.Folders).Where(x=>x.Name?.ToUpper() == projectName.ToUpper());
         }
 
         public IEnumerable<Folder> GetAllFoldersByName(string fodlerName)
@@ -64,7 +64,7 @@ namespace RevitServersService
                 return Enumerable.Empty<Folder>();
 
             return results.Last().Servers.SelectMany(s=>s.Folders).SelectMany(GetAllFolders)
-                .Where(f=>f.Name == fodlerName);
+                .Where(f=>f.Name?.ToUpper() == fodlerName.ToUpper());
         }
 
         public IEnumerable<Model> GetAllModelsByName(string modelName)
@@ -73,7 +73,7 @@ namespace RevitServersService
                 return Enumerable.Empty<Model>();
 
             return results.Last().Servers.SelectMany(s => s.Folders).SelectMany(GetAllModels)
-                .Where(f => f.Name == modelName);
+                .Where(f => f.Name?.ToUpper() == modelName.ToUpper());
         }
 
         public async Task<History> GetModelHistory(string host, int year, string path, CancellationToken token)

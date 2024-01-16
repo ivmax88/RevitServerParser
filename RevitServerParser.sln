@@ -9,7 +9,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RevitServerParser.Tests", "
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RevitServersService.Tests", "RevitServersService.Tests\RevitServersService.Tests.csproj", "{2B349CD0-D7B0-4508-864D-0A16FD5B8620}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RevitServersService", "RevitServersService\RevitServersService.csproj", "{295EC177-997B-42C1-B81A-EC7F081FC634}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RevitServersService", "RevitServersService\RevitServersService.csproj", "{295EC177-997B-42C1-B81A-EC7F081FC634}"
+EndProject
+Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{DD9329F7-5950-498E-B971-6C5CD881D571}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,10 @@ Global
 		{295EC177-997B-42C1-B81A-EC7F081FC634}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{295EC177-997B-42C1-B81A-EC7F081FC634}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{295EC177-997B-42C1-B81A-EC7F081FC634}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DD9329F7-5950-498E-B971-6C5CD881D571}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DD9329F7-5950-498E-B971-6C5CD881D571}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DD9329F7-5950-498E-B971-6C5CD881D571}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DD9329F7-5950-498E-B971-6C5CD881D571}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
