@@ -52,7 +52,7 @@ namespace RevitServerParser
         {
             return $@"http://{host}/RevitServerAdminRESTService{year}/AdminRESTService.svc";
         }
-
+#if NET8_0
         public static void CheckHeaders(HttpClient client)
         {
             if (client.DefaultRequestHeaders.Contains(UserNameHeader) == false)
@@ -63,6 +63,49 @@ namespace RevitServerParser
 
             if (client.DefaultRequestHeaders.Contains(OperationGUIDHeader) == false)
                 client.DefaultRequestHeaders.Add(OperationGUIDHeader, Guid.NewGuid().ToString());
+        }
+#endif
+
+        public static IEnumerable<Folder> GetAllFolders(Folder folder)
+        {
+            var q = new Queue<Folder>();
+            q.Enqueue(folder);
+
+            var r = new List<Folder>();
+
+            while (q.Count > 0)
+            {
+                var f = q.Dequeue();
+
+                r.Add(f);
+
+                if (f.Folders?.Count > 0)
+                    foreach (var ff in f.Folders)
+                        q.Enqueue(ff);
+            }
+
+            return r;
+        }
+
+        public static IEnumerable<Model> GetAllModels(Folder folder)
+        {
+            var q = new Queue<Folder>();
+            q.Enqueue(folder);
+
+            var r = new List<Model>();
+
+            while (q.Count > 0)
+            {
+                var f = q.Dequeue();
+
+                r.AddRange(f.Models.Where(x => x is not null));
+
+                if (f.Folders?.Count > 0)
+                    foreach (var ff in f.Folders)
+                        q.Enqueue(ff);
+            }
+
+            return r;
         }
     }
 }

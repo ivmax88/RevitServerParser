@@ -63,7 +63,7 @@ namespace RevitServersService
             if (results.Count == 0)
                 return Enumerable.Empty<Folder>();
 
-            return results.Last().Servers.SelectMany(s=>s.Folders).SelectMany(GetAllFolders)
+            return results.Last().Servers.SelectMany(s=>s.Folders).SelectMany(UtilsConstants.GetAllFolders)
                 .Where(f=>f.Name?.ToUpper() == fodlerName.ToUpper());
         }
 
@@ -72,7 +72,7 @@ namespace RevitServersService
             if (results.Count == 0)
                 return Enumerable.Empty<Model>();
 
-            return results.Last().Servers.SelectMany(s => s.Folders).SelectMany(GetAllModels)
+            return results.Last().Servers.SelectMany(s => s.Folders).SelectMany(UtilsConstants.GetAllModels)
                 .Where(f => f.Name?.ToUpper() == modelName.ToUpper());
         }
 
@@ -98,46 +98,6 @@ namespace RevitServersService
             return await client.GetModelInfo(host, year, path, token) ?? new Modelnfo();
         }
 
-        private IEnumerable<Folder> GetAllFolders(Folder folder)
-        {
-            var q = new Queue<Folder>();
-            q.Enqueue(folder);
-
-            var r = new List<Folder>();
-
-            while(q.Count > 0)
-            {
-                var f = q.Dequeue();
-
-                r.Add(f);
-
-                if(f.Folders?.Count > 0)
-                    foreach(var ff in f.Folders)
-                        q.Enqueue(ff);
-            }
-
-            return r;
-        }
-
-        private IEnumerable<Model> GetAllModels(Folder folder)
-        {
-            var q = new Queue<Folder>();
-            q.Enqueue(folder);
-
-            var r = new List<Model>();
-
-            while (q.Count > 0)
-            {
-                var f = q.Dequeue();
-
-                r.AddRange(f.Models.Where(x=>x is not null));
-
-                if (f.Folders?.Count > 0)
-                    foreach (var ff in f.Folders)
-                        q.Enqueue(ff);
-            }
-
-            return r;
-        }
+     
     }
 }

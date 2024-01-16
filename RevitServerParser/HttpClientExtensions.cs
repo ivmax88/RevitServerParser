@@ -1,4 +1,6 @@
-﻿using System.Text.Json;
+﻿#if NET8_0
+
+using System.Text.Json;
 using RevitServerParser.RevitServerModels;
 using static RevitServerParser.UtilsConstants;
 
@@ -119,3 +121,6 @@ namespace RevitServerParser
         }
     }
 }
+
+
+#endif

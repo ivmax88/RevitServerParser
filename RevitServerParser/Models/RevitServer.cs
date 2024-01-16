@@ -4,8 +4,20 @@ namespace RevitServerParser.Models
 {
     public class RevitServer
     {
-        public string Host { get; init; }
-        public int Year { get; init; }
+        public string Host
+        {
+            get;
+#if NET8_0
+            init; 
+#endif
+        }
+        public int Year
+        { 
+            get;
+#if NET8_0
+            init;
+#endif
+        }
         public List<Folder> Folders { get; } = [];
         public List<Model> Models { get; } = [];
 

@@ -1,4 +1,5 @@
-﻿using System.Text.Json;
+﻿
+using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
 
@@ -16,7 +17,11 @@ namespace RevitServerParser
             var mc = r.Matches(str);
             if(mc.Count==0)
                 return null;
+#if NET48
+            if (long.TryParse(mc.Cast<Match>().FirstOrDefault(x=>x.Length>0)?.Value, out long tiks))
+#elif NET8_0
             if (long.TryParse(mc.FirstOrDefault(x=>x.Length>0)?.Value, out long tiks))
+#endif
             {
                 var d = new DateTime(1970, 1, 1);
                 return d.AddMilliseconds(tiks);
@@ -32,3 +37,4 @@ namespace RevitServerParser
         }
     }
 }
+
