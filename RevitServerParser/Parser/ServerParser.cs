@@ -29,7 +29,7 @@ namespace RevitServerParser.Parser
 
             var result = new RevitServer(Host, Year);
             result.Models.AddRange(models.Select(x => new Model(x.Name)));
-            result.Folders.AddRange(folders.Select(x => new Folder(x.Name)));
+            result.Folders.AddRange(folders.Select(x => new Folder(x.Name, Host, Year)));
 
             var stack = new Stack<Folder>(result.Folders);
 
@@ -39,22 +39,25 @@ namespace RevitServerParser.Parser
                 string path = folder.GetPath();
 
                 var content = await client.GetFolderContent(Host, Year, path, cancellationToken).ConfigureAwait(false);
-                if (content != null)
+                if (content == null)
                 {
-                    folders = content.Folders ?? [];
-                    models = content.Models ?? [];
-                    folder.Models.AddRange(models.Select(x => new Model(x.Name, folder)));
+                    folder.IsNullContent = true;
+                    continue; 
+                }
+                
+                folders = content.Folders ?? [];
+                models = content.Models ?? [];
+                folder.Models.AddRange(models.Select(x => new Model(x.Name, folder)));
 
-                    if (folder.FolderLevel + 1 <= maxFolderLevel)
-                    {
-                        folder.Folders.AddRange(folders.Select(x => new Folder(x.Name, folder, folder.FolderLevel + 1)));
-                    }
+                if (folder.FolderLevel + 1 <= maxFolderLevel)
+                {
+                    folder.Folders.AddRange(folders.Select(x => new Folder(x.Name, folder, folder.FolderLevel + 1)));
+                }
 
-                    foreach (var f in folder.Folders)
-                    {
-                        if (f.FolderLevel > maxFolderLevel) continue;
-                        stack.Push(f);
-                    }
+                foreach (var f in folder.Folders)
+                {
+                    if (f.FolderLevel > maxFolderLevel) continue;
+                    stack.Push(f);
                 }
 
             }

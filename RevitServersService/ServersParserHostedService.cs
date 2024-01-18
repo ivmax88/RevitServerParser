@@ -43,9 +43,9 @@ internal class ServersParserHostedService : BackgroundService
                 await DoWork(stoppingToken);
             }
         }
-        catch (OperationCanceledException)
+        catch (Exception ex)
         {
-            _logger.LogInformation("ServersParserHostedService stopping.");
+            _logger.LogError(ex, ex.Message);
         }
     }
 

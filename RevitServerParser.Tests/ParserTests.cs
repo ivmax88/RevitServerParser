@@ -1,6 +1,4 @@
 ﻿using System.Text.Json;
-using System.Text.Json.Serialization;
-using Microsoft.VisualStudio.TestPlatform.ObjectModel.Utilities;
 using RevitServerParser.Models;
 using RevitServerParser.Parser;
 
@@ -21,7 +19,6 @@ namespace RevitServerParser.Tests
 
 
             var server = await parser.ParseServer(2);
-
 
             Assert.That(server, Is.Not.Null);
 
