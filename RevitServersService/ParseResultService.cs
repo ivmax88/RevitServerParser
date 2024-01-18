@@ -68,7 +68,7 @@ namespace RevitServersService
                 return Enumerable.Empty<Folder>();
 
             return results.Last().Servers.SelectMany(x => x.Folders)
-                .OrderBy(x => x.IsNullAnySubFolderOrThisFolder)
+                .OrderByDescending(x => x.IsNullAnySubFolderOrThisFolder)
                 .ThenBy(x => x.Name)
                 .ThenBy(x => x.Year)
                 .ThenBy(x => x.Host);

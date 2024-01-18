@@ -32,8 +32,6 @@ app.UseSwaggerUI();
 
 app.UseFileServer();
 
-app.UseHttpsRedirection();
-
 app.MapControllers();
 
 app.Run();
