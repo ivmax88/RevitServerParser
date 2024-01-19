@@ -1,7 +1,5 @@
-﻿using System.IO;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Options;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using RevitServerParser.Models;
 
 
@@ -11,20 +9,20 @@ namespace RevitServersService.Controllers
     [ApiController]
     public class ApiController : ControllerBase
     {
-        private readonly IOptionsMonitor<List<RevitServerOpt>> options;
         private readonly ParseResultService service;
+        private readonly db.ServersDbContext serversDbContext;
 
-        public ApiController(IOptionsMonitor<List<RevitServerOpt>> options,
-            ParseResultService service)
+        public ApiController(ParseResultService service,
+            db.ServersDbContext serversDbContext)
         {
-            this.options = options;
             this.service = service;
+            this.serversDbContext = serversDbContext;
         }
 
-        [HttpGet("/test")]
-        public List<RevitServerOpt> Test()
+        [HttpGet("/getRevitServers")]
+        public async Task<List<db.RSToParse>> Test(CancellationToken cancellationToken)
         {
-            return options.CurrentValue;
+            return await serversDbContext.RevitServers.ToListAsync(cancellationToken);
         }
 
         [HttpGet("/getall")]

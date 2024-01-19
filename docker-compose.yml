@@ -6,3 +6,26 @@ services:
     build:
       context: .
       dockerfile: RevitServersService/Dockerfile
+    links:
+      - db
+    environment:
+      - ConnectionStrings__Default=Host=db; Port=5432; Database=servers; Username=user; Password=pass
+
+  db:
+    image: postgres
+    restart: always
+    network_mode: default
+    environment:
+      POSTGRES_PASSWORD: pass
+      POSTGRES_USER: user
+    volumes:
+      - /db-data:/var/lib/postgres_data
+  adminer:
+    image: adminer
+    restart: always
+    links:
+      - db
+    network_mode: default
+    ports:
+      - 8080:8080
+      

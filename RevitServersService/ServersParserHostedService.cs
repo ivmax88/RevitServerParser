@@ -1,9 +1,12 @@
 ﻿using System.Text.Json;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Migrations.Operations.Builders;
 using Microsoft.Extensions.Options;
 using RevitServerParser;
 using RevitServerParser.Parser;
 using RevitServerParser.RevitServerModels;
 using RevitServersService;
+using RevitServersService.db;
 
 internal class ServersParserHostedService : BackgroundService
 {
@@ -11,23 +14,29 @@ internal class ServersParserHostedService : BackgroundService
     private readonly IOptionsMonitor<List<RevitServerOpt>> _servers;
     private readonly HttpClient _client;
     private readonly ParseResultService parseResultService;
+    private readonly IServiceProvider serviceProvider;
 
     public bool InProcess { get; private set; }
     public DateTime LastParseTime { get; private set; }
     public ServersParserHostedService(ILogger<ServersParserHostedService> logger,
         IOptionsMonitor<List<RevitServerOpt>> servers,
         HttpClient client,
-        ParseResultService parseResultService)
+        ParseResultService parseResultService,
+        IServiceProvider serviceProvider)
     {
         _logger = logger;
         _servers = servers;
         _client = client;
         this.parseResultService = parseResultService;
+        this.serviceProvider = serviceProvider;
     }
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
         _logger.LogInformation("ServersParserHostedService running.");
+
+
+        await TryAddServers(stoppingToken);
 
         await DoWork(stoppingToken);
 #if DEBUG
@@ -49,13 +58,30 @@ internal class ServersParserHostedService : BackgroundService
         }
     }
 
+    private async Task TryAddServers(CancellationToken stoppingToken)
+    {
+        using var scope = serviceProvider.CreateScope();
+
+        var context = scope.ServiceProvider.GetRequiredService<ServersDbContext>();
+
+        await context.Database.EnsureCreatedAsync(stoppingToken);
+
+        if (await context.RevitServers.AnyAsync(stoppingToken))
+            return;
+
+        var servers = CreateTempServers().Select(x => new RSToParse() { Host = x.host, Year = x.year });
+
+        context.RevitServers.AddRange(servers);
+
+        await context.SaveChangesAsync(stoppingToken);
+
+    }
+
     record tempServer(string host, int year);
     private async Task DoWork(CancellationToken stoppingToken)
     {
         InProcess = true;
         _logger.LogInformation("Start Work");
-
-        if (_servers == null) return;
 
         var results = await Parse(stoppingToken);
 
@@ -69,9 +95,14 @@ internal class ServersParserHostedService : BackgroundService
 
     private async Task<List<RevitServerParser.Models.RevitServer>> Parse(CancellationToken stoppingToken)
     {
-        var tempServers = CreateTempSerers();
 
-        var parsers = tempServers.Select(s => new ServerParser(s.host, s.year, _client)).ToList();
+        using var scope = serviceProvider.CreateScope();
+
+        var context = scope.ServiceProvider.GetRequiredService<ServersDbContext>();
+
+        var servers = await context.RevitServers.ToListAsync(stoppingToken);
+
+        var parsers = servers.Select(s => new ServerParser(s.Host, s.Year, _client)).ToList();
 
         var tasks = parsers.Select(x => x.ParseServer(3, stoppingToken)).ToList();
 
@@ -84,7 +115,7 @@ internal class ServersParserHostedService : BackgroundService
     }
 
 
-    private List<tempServer> CreateTempSerers()
+    private List<tempServer> CreateTempServers()
     {
         var result = new List<tempServer>();
 
