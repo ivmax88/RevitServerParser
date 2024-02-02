@@ -116,7 +116,6 @@ namespace RevitServersService
             if (host == null || path == null || year < 2015)
                 return new History();
 
-            await Task.Delay(5000, token);
             return await client.GetHistory(host, year, path, token) ?? new History();
         }
 
@@ -131,9 +130,16 @@ namespace RevitServersService
             return await client.GetModelInfo(host, year, path, token) ?? new Modelnfo();
         }
 
-        internal IEnumerable<string> GetPathByModelName(string name)
+        internal IEnumerable<string> GetPathByModelName(string modelName)
         {
-            return Enumerable.Empty<string>();
+            var models = GetAllModelsByName(modelName);
+            if (models.Count() == 0) return Enumerable.Empty<string>();
+
+            models = models.Where(x => string.Compare(x.Name, modelName, StringComparison.OrdinalIgnoreCase) == 0);
+
+            if (models.Count() == 0) return Enumerable.Empty<string>();
+
+            return models.Select(x => x.ToString());
         }
 
         #endregion

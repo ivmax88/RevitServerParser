@@ -16,10 +16,6 @@ builder.Services.AddControllers().AddJsonOptions(o=>
     o.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve;
 
 });
-//builder.Services.ConfigureHttpJsonOptions(opt =>
-//{
-//    opt.SerializerOptions.ReferenceHandler = ReferenceHandler.Preserve;
-//});
 
 builder.Services.AddSwaggerGen();
 builder.Services.AddHttpClient().ConfigureHttpClientDefaults(b =>

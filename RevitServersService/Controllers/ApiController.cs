@@ -69,6 +69,14 @@ namespace RevitServersService.Controllers
         }
 
 
+        [HttpGet("/getModelPaths/{name}")]
+        public IEnumerable<string> GetPathByModelName(string name)
+        {
+            return service.GetPathByModelName(name);
+        }
+
+
+
         [HttpGet("/getModelHistory/{host}/{year}/{path}")]
         public async Task<IResult> GetModelHistory(string host, int year, string path, CancellationToken token)
         {
