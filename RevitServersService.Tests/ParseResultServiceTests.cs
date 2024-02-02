@@ -1,3 +1,4 @@
+using Microsoft.Extensions.Logging;
 using RevitServerParser.Parser;
 
 namespace RevitServersService.Tests
@@ -11,8 +12,9 @@ namespace RevitServersService.Tests
 
         public ParseResultServiceTests()
         {
+            var f = new Microsoft.Extensions.Logging.Abstractions.NullLoggerFactory();
             client = new HttpClient();
-            service = new ParseResultService();
+            service = new ParseResultService(f.CreateLogger<ParseResultService>(), client);
         }
 
         [Test, Order(0)]
