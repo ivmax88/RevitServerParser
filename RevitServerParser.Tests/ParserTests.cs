@@ -1,4 +1,5 @@
 ﻿using System.Text.Json;
+using System.Text.Json.Serialization;
 using RevitServerParser.Models;
 using RevitServerParser.Parser;
 
@@ -22,9 +23,14 @@ namespace RevitServerParser.Tests
 
             Assert.That(server, Is.Not.Null);
 
-            var json = JsonSerializer.Serialize(server);
+            JsonSerializerOptions options = new()
+            {
+                ReferenceHandler = ReferenceHandler.Preserve,
+            };
 
-            server = JsonSerializer.Deserialize<RevitServer>(json);
+            var json = JsonSerializer.Serialize<RevitServer>(server, options);
+            server = JsonSerializer.Deserialize<RevitServer>(json, options);
+
 
             Assert.That(server, Is.Not.Null);
             Assert.That(server.Folders, Is.Not.Empty);

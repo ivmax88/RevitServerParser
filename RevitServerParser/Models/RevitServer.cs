@@ -1,6 +1,4 @@
-﻿using System.Text.Json.Serialization;
-
-namespace RevitServerParser.Models
+﻿namespace RevitServerParser.Models
 {
     public class RevitServer
     {
@@ -8,34 +6,30 @@ namespace RevitServerParser.Models
         {
             get;
 #if NET8_0
-            init; 
+            init;
 #endif
         }
         public int Year
-        { 
+        {
             get;
 #if NET8_0
             init;
 #endif
         }
-        public List<Folder> Folders { get; } = [];
-        public List<Model> Models { get; } = [];
+        public List<Folder> Folders { get; set; } = [];
+
+        public List<Model> Models { get; set; } = [];
 
         internal RevitServer(string host, int year)
         {
             Host = host;
             Year = year;
+            Folders = [];
+            Models = [];
         }
 
-        [JsonConstructor]
-        public RevitServer(string host, int year,
-             List<Folder> folders, List<Model> models)
-
+        public RevitServer()
         {
-            Host = host;
-            Year = year;
-            Folders = folders;
-            Models = models;
         }
     }
 }

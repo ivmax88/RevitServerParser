@@ -130,7 +130,12 @@ namespace RevitServersService
 
             return await client.GetModelInfo(host, year, path, token) ?? new Modelnfo();
         }
-       
+
+        internal IEnumerable<string> GetPathByModelName(string name)
+        {
+            return Enumerable.Empty<string>();
+        }
+
         #endregion
     }
 }

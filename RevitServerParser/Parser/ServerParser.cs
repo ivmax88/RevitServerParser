@@ -28,8 +28,8 @@ namespace RevitServerParser.Parser
             var models = baseFolder.Models ?? [];
 
             var result = new RevitServer(Host, Year);
-            result.Models.AddRange(models.Select(x => new Model(x.Name)));
-            result.Folders.AddRange(folders.Select(x => new Folder(x.Name, Host, Year)));
+            result.Models.AddRange(models.Select(x => new Model() { Name = x.Name}));
+            result.Folders.AddRange(folders.Select(x => new Folder() { Name = x.Name, Host = Host, Year = Year }));
 
             var stack = new Stack<Folder>(result.Folders);
 
@@ -42,16 +42,16 @@ namespace RevitServerParser.Parser
                 if (content == null)
                 {
                     folder.IsNullContent = true;
-                    continue; 
+                    continue;
                 }
-                
+
                 folders = content.Folders ?? [];
                 models = content.Models ?? [];
-                folder.Models.AddRange(models.Select(x => new Model(x.Name, folder)));
+                folder.Models.AddRange(models.Select(x => new Model() { Name = x.Name, Parent = folder }));
 
                 if (folder.FolderLevel + 1 <= maxFolderLevel)
                 {
-                    folder.Folders.AddRange(folders.Select(x => new Folder(x.Name, folder, folder.FolderLevel + 1)));
+                    folder.Folders.AddRange(folders.Select(x => new Folder(){Name =x.Name,Parent = folder, FolderLevel =folder.FolderLevel + 1}));
                 }
 
                 foreach (var f in folder.Folders)

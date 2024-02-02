@@ -1,45 +1,18 @@
-﻿using System.Text.Json.Serialization;
-
-namespace RevitServerParser.Models
+﻿namespace RevitServerParser.Models
 {
     public class Folder
     {
-        [JsonIgnore]
-        internal Folder? Parent { get; }
-        public int FolderLevel { get; }
-        public string? Name { get; }
+        public Folder? Parent { get; set; }
+        public int FolderLevel { get; set; }
+        public string? Name { get; set; }
         public bool IsNullContent { get; set; }
         public bool IsNullAnySubFolderOrThisFolder => IsAnySubFolderOrThisFolder_IsNull();
-        public string? Host { get; }
-        public int? Year { get; }
-        public List<Model> Models { get; } = [];
-        public List<Folder> Folders { get; } = [];
-
-        internal Folder(string? name, Folder? parent, int level = 0)
+        public string? Host { get; set; }
+        public int? Year { get; set; }
+        public List<Model> Models { get; set; } = [];
+        public List<Folder> Folders { get; set; } = [];
+        public Folder()
         {
-            Name = name;
-            Parent = parent;
-            FolderLevel = level;
-        }
-
-        internal Folder(string? name, string host, int year)
-        {
-            Name = name;
-            Host = host;
-            Year = year;
-        }
-
-        [JsonConstructor]
-        public Folder(string? name, int folderLevel,
-             List<Folder> folders, List<Model> models, 
-             string? host, int? year)
-        {
-            Name = name;
-            FolderLevel = folderLevel;
-            Folders = folders;
-            Models = models;
-            Host = host;
-            Year = year;
         }
 
         internal bool IsAnySubFolderOrThisFolder_IsNull()
@@ -49,9 +22,9 @@ namespace RevitServerParser.Models
             return UtilsConstants.GetAllFolders(this).Any(x => x.IsNullContent);
         }
 
-        internal string GetPath()
+        public string GetPath()
         {
-            var temp = new Folder(Name, Parent);
+            var temp = new Folder() { Name = Name, Parent = Parent };
             var folderPaths = new List<string>() { temp.Name! };
             while (temp.Parent != null)
             {

@@ -16,13 +16,13 @@
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.0" />
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.19.5" />
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.0" />
-    <PackageReference Include="olp.RevitServerParser" Version="1.4.0" />
+    <!--<PackageReference Include="olp.RevitServerParser" Version="1.4.0" />-->
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
   </ItemGroup>
 
-  <!--<ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="..\RevitServerParser\RevitServerParser.csproj" />
-  </ItemGroup>-->
+  </ItemGroup>
 
 
 </Project>

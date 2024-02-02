@@ -11,11 +11,15 @@ builder.Services.AddDbContext<ServersDbContext>(opt
 
 
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddControllers();
-builder.Services.ConfigureHttpJsonOptions(opt =>
+builder.Services.AddControllers().AddJsonOptions(o=>
 {
-    opt.SerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
+    o.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve;
+
 });
+//builder.Services.ConfigureHttpJsonOptions(opt =>
+//{
+//    opt.SerializerOptions.ReferenceHandler = ReferenceHandler.Preserve;
+//});
 
 builder.Services.AddSwaggerGen();
 builder.Services.AddHttpClient().ConfigureHttpClientDefaults(b =>
