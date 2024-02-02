@@ -20,7 +20,7 @@ async function getAllProjects() {
     // если запрос прошел нормально
     if (response.ok === true) {
         // получаем данные
-        const projects = await response.json();
+        const projects = (await response.json()).$values;
         if (Array.isArray(projects) && projects.length == 0) {
             document.querySelector("h2").innerHTML += "  --> projects is empty";
         }
