@@ -28,73 +28,73 @@ namespace RevitServersService.Tests
         }
 
         [Test]
-        public void GetAll()
+        public async Task GetAll()
         {
-            var result = service.GetAll();
+            var result = await service.GetAllAsync();
 
             Assert.That(result.Servers, Is.Not.Empty);
         }
 
         [Test]
-        public void GetYear()
+        public async Task GetYear()
         {
-            var result = service.Get(2022);
+            var result = await service.GetAsync(2022);
 
             Assert.That(result, Is.Not.Empty);
         }
 
         [Test]
-        public void GetYearEmpty()
+        public async Task GetYearEmpty()
         {
-            var result = service.Get(2020);
+            var result = await service.GetAsync(2020);
 
             Assert.That(result, Is.Empty);
         }
 
         [Test]
-        public void GetHost()
+        public async Task GetHost()
         {
-            var result = service.Get("srv4");
+            var result = await service.GetAsync("srv4");
 
             Assert.That(result, Is.Not.Empty);
         }
 
         [Test]
-        public void GetHostEmpty()
+        public async Task GetHostEmpty()
         {
-            var result = service.Get("srv41");
+            var result = await service.GetAsync("srv41");
 
             Assert.That(result, Is.Empty);
         }
 
         [Test]
-        public void GetProjectByName()
+        public async Task GetProjectByName()
         {
-            var result = service.GetProjectByName("Крылатская 23");
+            var result = await service.GetProjectByNameAsync("Крылатская 23");
 
             Assert.That(result, Is.Not.Empty);
         }
 
         [Test]
-        public void GetAllFoldersByName()
+        public async Task GetAllFoldersByName()
         {
-            var result = service.GetAllFoldersByName("01_АР");
+            var result = await service.GetAllFoldersByNameAsync("01_АР");
 
             Assert.That(result.Count(), Is.GreaterThan(2));
         }
 
         [Test]
-        public void GetAllModelsByName()
+        public async Task GetAllModelsByName()
         {
-            var result = service.GetAllModelsByName("OLP_R22_JKV_AK_01_AR_K00.rvt");
+            var result = await service.GetAllModelsByNameAsync("OLP_R22_JKV_AK_01_AR_K00.rvt");
 
             Assert.That(result.Count(), Is.EqualTo(1));
         }
 
         [Test]
-        public void GetAllModelsByNameEmpty()
+        public async Task GetAllModelsByNameEmpty()
         {
-            var result = service.GetAllModelsByName("testModelName");
+            var result = await service.GetAllModelsByNameAsync("testModelName");
 
             Assert.That(result.Count(), Is.EqualTo(0));
         }

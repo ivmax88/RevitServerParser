@@ -26,53 +26,59 @@ namespace RevitServersService.Controllers
         }
 
         [HttpGet("/getall")]
-        public ParseResult GetAll()
+        public async Task<ParseResult> GetAll()
         {
-            return service.GetAll();
+            return await service.GetAllAsync();
         }
 
         [HttpGet("/get-year/{year}")]
-        public IEnumerable<RevitServer> Get(int year)
+        public async Task<IEnumerable<RevitServer>> Get(int year)
         {
-            return service.Get(year);
+            return await service.GetAsync(year);
         }
 
         [HttpGet("/get-host/{host}")]
-        public IEnumerable<RevitServer> Get(string host)
+        public async Task<IEnumerable<RevitServer>> Get(string host)
         {
-            return service.Get(host);
+            return await service.GetAsync(host);
         }
 
         [HttpGet("/getProjects/{name}")]
-        public IEnumerable<Folder> GetProjectByName(string name)
+        public async Task<IEnumerable<Folder>> GetProjectByName(string name)
         {
-            return service.GetProjectByName(name);
+            return await service.GetProjectByNameAsync(name);
         }
 
         [HttpGet("/getAllProjects")]
-        public IEnumerable<Folder> GetAllProjects()
+        public async Task<IEnumerable<Folder>> GetAllProjects()
         {
-            return service.GetAllProjects();
+            return await service.GetAllProjectsAsync();
         }
 
         [HttpGet("/getFolders/{name}")]
-        public IEnumerable<Folder> GetAllFoldersByName(string name)
+        public async Task<IEnumerable<Folder>> GetAllFoldersByName(string name)
         {
-            return service.GetAllFoldersByName(name);
+            return await service.GetAllFoldersByNameAsync(name);
         }
 
 
         [HttpGet("/getModels/{name}")]
-        public IEnumerable<Model> GetAllModelsByName(string name)
+        public async Task<IEnumerable<Model>> GetAllModelsByName(string name)
         {
-            return service.GetAllModelsByName(name);
+            return await service.GetAllModelsByNameAsync(name);
         }
 
 
-        [HttpGet("/getModelPaths/{name}")]
-        public IEnumerable<string> GetPathByModelName(string name)
+        [HttpGet("/getModelPath/{name}")]
+        public async Task<IEnumerable<string>> GetPathByModelName(string name)
         {
-            return service.GetPathByModelName(name);
+            return await service.GetPathByModelName(name);
+        }
+
+        [HttpGet("/getModelsPaths")]
+        public async Task<IEnumerable<string>> GetModelsPaths([FromQuery]IEnumerable<string> names)
+        {
+            return await service.GetModelsPathsAsync(names);
         }
 
 
@@ -82,7 +88,7 @@ namespace RevitServersService.Controllers
         {
             try
             {
-                return Results.Ok(await service.GetModelHistory(host, year, path, token));
+                return Results.Ok(await service.GetModelHistoryAsync(host, year, path, token));
             }
             catch (Exception e)
             {
@@ -95,7 +101,7 @@ namespace RevitServersService.Controllers
         {
             try
             {
-                return Results.Ok(await service.GetModelInfo(host, year, path, token));
+                return Results.Ok(await service.GetModelInfoAsync(host, year, path, token));
             }
             catch (Exception e)
             {

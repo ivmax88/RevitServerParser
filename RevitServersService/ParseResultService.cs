@@ -38,77 +38,103 @@ namespace RevitServersService
 
         #region api calls
 
-        public ParseResult GetAll()
+        public async Task<ParseResult> GetAllAsync()
         {
             if (results.Count == 0)
                 return new ParseResult(DateTime.MinValue, []);
 
-            return results.Last();
+            return await Task.Run(() => results.Last());
         }
 
-        public IEnumerable<RevitServer> Get(int year)
+        public async Task<IEnumerable<RevitServer>> GetAsync(int year)
         {
             if (results.Count == 0)
                 return Enumerable.Empty<RevitServer>();
 
-            return results.Last().Servers.Where(x => x.Year == year);
+            return await Task.Run(() => results.Last().Servers.Where(x => x.Year == year));
         }
 
-        public IEnumerable<RevitServer> Get(string host)
+        public async Task<IEnumerable<RevitServer>> GetAsync(string host)
         {
             if (results.Count == 0)
                 return Enumerable.Empty<RevitServer>();
 
-            return results.Last().Servers.Where(x => x.Host == host);
+            return await Task.Run(() => results.Last().Servers.Where(x => x.Host == host));
         }
 
-        public IEnumerable<Folder> GetAllProjects()
+        public async Task<IEnumerable<Folder>> GetAllProjectsAsync()
         {
             if (results.Count == 0)
                 return Enumerable.Empty<Folder>();
 
-            return results.Last().Servers.SelectMany(x => x.Folders)
+            return await Task.Run(() =>
+            {
+                return results.Last().Servers.SelectMany(x => x.Folders)
                 .OrderByDescending(x => x.IsNullAnySubFolderOrThisFolder)
                 .ThenBy(x => x.Name)
                 .ThenBy(x => x.Year)
                 .ThenBy(x => x.Host);
+            });
         }
 
-        public IEnumerable<Folder> GetProjectByName(string projectName)
+        public async Task<IEnumerable<Folder>> GetProjectByNameAsync(string projectName)
         {
             if (results.Count == 0)
                 return Enumerable.Empty<Folder>();
 
-            var result = results.Last().Servers.SelectMany(x => x.Folders).Where(x => x.Name?.ToUpper() == projectName.ToUpper());
-            if (result.Any(x => x.IsNullAnySubFolderOrThisFolder))
+            return await Task.Run(() =>
             {
-                if(lastGoodParse == null) return Enumerable.Empty<Folder>();
+                var result = results.Last().Servers.SelectMany(x => x.Folders).Where(x => x.Name?.ToUpper() == projectName.ToUpper());
+                if (result.Any(x => x.IsNullAnySubFolderOrThisFolder))
+                {
+                    if (lastGoodParse == null) return Enumerable.Empty<Folder>();
 
-                result = lastGoodParse.Servers.SelectMany(x => x.Folders).Where(x => x.Name?.ToUpper() == projectName.ToUpper());
-            }
+                    result = lastGoodParse.Servers.SelectMany(x => x.Folders).Where(x => x.Name?.ToUpper() == projectName.ToUpper());
+                }
 
-            return result;
+                return result;
+            });
         }
 
-        public IEnumerable<Folder> GetAllFoldersByName(string fodlerName)
+        public async Task<IEnumerable<Folder>> GetAllFoldersByNameAsync(string fodlerName)
         {
             if (results.Count == 0)
                 return Enumerable.Empty<Folder>();
 
-            return results.Last().Servers.SelectMany(s => s.Folders).SelectMany(UtilsConstants.GetAllFolders)
-                .Where(f => f.Name?.ToUpper() == fodlerName.ToUpper());
+            return await Task.Run(() =>
+            {
+                return results.Last().Servers.SelectMany(s => s.Folders).SelectMany(UtilsConstants.GetAllFolders)
+                .Where(f => string.Compare(f.Name, fodlerName, StringComparison.CurrentCultureIgnoreCase) == 0);
+            });
         }
 
-        public IEnumerable<Model> GetAllModelsByName(string modelName)
+        public async Task<IEnumerable<Model>> GetAllModelsAsync()
         {
             if (results.Count == 0)
                 return Enumerable.Empty<Model>();
 
-            return results.Last().Servers.SelectMany(s => s.Folders).SelectMany(UtilsConstants.GetAllModels)
-                .Where(f => f.Name?.ToUpper() == modelName.ToUpper());
+            return await Task.Run(() =>
+            {
+                var result = results.Last();
+                if (result.Servers.SelectMany(x => x.Folders).Any(x => x.IsNullAnySubFolderOrThisFolder))
+                {
+                    if (lastGoodParse != null)
+                        result = lastGoodParse;
+                }
+                return result.Servers.SelectMany(s => s.Folders).SelectMany(UtilsConstants.GetAllModels);
+            });
         }
 
-        public async Task<History> GetModelHistory(string host, int year, string path, CancellationToken token)
+        public async Task<IEnumerable<Model>> GetAllModelsByNameAsync(string modelName)
+        {
+            var models = await GetAllModelsAsync();
+            if (!models.Any())
+                return Enumerable.Empty<Model>();
+
+            return models.Where(f => string.Compare(f.Name, modelName, StringComparison.CurrentCultureIgnoreCase) == 0);
+        }
+
+        public async Task<History> GetModelHistoryAsync(string host, int year, string path, CancellationToken token)
         {
             if (!path.ToUpper().EndsWith(".RVT"))
                 throw new ArgumentException("Path must be end with .rvt", nameof(path));
@@ -119,7 +145,7 @@ namespace RevitServersService
             return await client.GetHistory(host, year, path, token) ?? new History();
         }
 
-        public async Task<Modelnfo> GetModelInfo(string host, int year, string path, CancellationToken token)
+        public async Task<Modelnfo> GetModelInfoAsync(string host, int year, string path, CancellationToken token)
         {
             if (!path.ToUpper().EndsWith(".RVT"))
                 throw new ArgumentException("Path must be end with .rvt", nameof(path));
@@ -130,9 +156,9 @@ namespace RevitServersService
             return await client.GetModelInfo(host, year, path, token) ?? new Modelnfo();
         }
 
-        internal IEnumerable<string> GetPathByModelName(string modelName)
+        public async Task<IEnumerable<string>> GetPathByModelName(string modelName)
         {
-            var models = GetAllModelsByName(modelName);
+            var models = await GetAllModelsByNameAsync(modelName);
             if (models.Count() == 0) return Enumerable.Empty<string>();
 
             models = models.Where(x => string.Compare(x.Name, modelName, StringComparison.OrdinalIgnoreCase) == 0);
@@ -141,6 +167,22 @@ namespace RevitServersService
 
             return models.Select(x => x.ToString());
         }
+
+        public async Task<IEnumerable<string>> GetModelsPathsAsync(IEnumerable<string> modelNames)
+        {
+            var models = await GetAllModelsAsync();
+            var result = new List<string>();
+
+            foreach (var m in models)
+            {
+                var name = modelNames.FirstOrDefault(x => string.Compare(x, m.Name, StringComparison.CurrentCultureIgnoreCase) == 0);
+                if (name == null) continue;
+                result.Add(m.ToString());
+            }
+
+            return result;
+        }
+
 
         #endregion
     }
