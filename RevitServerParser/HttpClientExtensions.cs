@@ -8,10 +8,12 @@ namespace RevitServerParser
 {
     public static class HttpClientExtensions
     {
-        private static JsonSerializerOptions? opts = new JsonSerializerOptions(JsonSerializerDefaults.Web)
+        private static JsonSerializerOptions? opts;
+        static HttpClientExtensions()
         {
-
-        };
+            opts = new JsonSerializerOptions(JsonSerializerDefaults.Web);
+            opts.Converters.Add(new DateTimeConverter());
+        }
 
         /// <summary>
         /// Makes request to RevitServer
