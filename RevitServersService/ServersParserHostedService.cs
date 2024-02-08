@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
+using RevitServerParser.Models;
 using RevitServerParser.Parser;
 using RevitServersService;
 using RevitServersService.db;
@@ -31,18 +32,18 @@ internal class ServersParserHostedService : BackgroundService
     {
         _logger.LogInformation("ServersParserHostedService running.");
 
+        try
+        {
+            await TryAddServers(stoppingToken);
 
-        await TryAddServers(stoppingToken);
-
-        await DoWork(stoppingToken);
+            await DoWork(stoppingToken);
 #if DEBUG
         using PeriodicTimer timer = new(TimeSpan.FromMinutes(1));
 #else
-        using PeriodicTimer timer = new(TimeSpan.FromMinutes(10));
-#endif
+            using PeriodicTimer timer = new(TimeSpan.FromMinutes(10));
 
-        try
-        {
+
+#endif
             while (await timer.WaitForNextTickAsync(stoppingToken))
             {
                 await DoWork(stoppingToken);
@@ -89,14 +90,18 @@ internal class ServersParserHostedService : BackgroundService
         InProcess = false;
     }
 
-    private async Task<List<RevitServerParser.Models.RevitServer>> Parse(CancellationToken stoppingToken)
+    private async Task<List<RevitServer>> Parse(CancellationToken stoppingToken)
     {
+        List<RSToParse>? servers = null;
 
-        using var scope = serviceProvider.CreateScope();
+        using (var scope = serviceProvider.CreateScope())
+        {
+            var context = scope.ServiceProvider.GetRequiredService<ServersDbContext>();
+            servers = await context.RevitServers.ToListAsync(stoppingToken);
+        }
 
-        var context = scope.ServiceProvider.GetRequiredService<ServersDbContext>();
-
-        var servers = await context.RevitServers.ToListAsync(stoppingToken);
+        if (servers == null)
+            return Enumerable.Empty<RevitServer>().ToList();
 
         var parsers = servers.Select(s => new ServerParser(s.Host, s.Year, _client)).ToList();
 
@@ -121,8 +126,8 @@ internal class ServersParserHostedService : BackgroundService
                 result.Add(new tempServer(host, server.Year));
 #else
         foreach (var server in _servers.CurrentValue)
-                    foreach (var host in server.Hosts)
-                        result.Add(new tempServer(host, server.Year));
+            foreach (var host in server.Hosts)
+                result.Add(new tempServer(host, server.Year));
 #endif
         return result;
     }
