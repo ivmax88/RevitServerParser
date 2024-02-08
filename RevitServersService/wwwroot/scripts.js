@@ -10,6 +10,17 @@ function test() {
     h.innerHTML = "test";
 }
 
+async function getLastTime() {
+    const response = await fetch("/getLastDatetime", {
+        method: "GET",
+        headers: { "Accept": "application/json" }
+    });
+    if (response.ok === true) {
+        const v = (await response.json());
+
+        document.querySelector("h2").innerHTML += String.prototype.concat(" | last time: ", v);
+    }
+}
 
 async function getAllProjects() {
     // отправляет запрос и получаем ответ
@@ -35,6 +46,7 @@ async function getAllProjects() {
             rows.append(row(proj));
         });
     }
+    await getLastTime();
 }
 
 function row(p) {

@@ -25,6 +25,12 @@ namespace RevitServersService.Controllers
             return await serversDbContext.RevitServers.ToListAsync(cancellationToken);
         }
 
+        [HttpGet("/getLastDatetime")]
+        public async Task<DateTime> GetLastDatetime()
+        {
+            return await service.GetLastDatetimeAsync();
+        }
+
         [HttpGet("/getall")]
         public async Task<ParseResult> GetAll()
         {

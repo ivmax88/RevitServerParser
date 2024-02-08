@@ -38,6 +38,16 @@ namespace RevitServersService
 
         #region api calls
 
+
+        public async Task<DateTime> GetLastDatetimeAsync()
+        {
+            if (results.Count == 0)
+                return DateTime.MinValue;
+
+            return await Task.Run(() => results.Last().Date);
+        }
+
+
         public async Task<ParseResult> GetAllAsync()
         {
             if (results.Count == 0)
