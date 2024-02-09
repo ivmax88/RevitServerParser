@@ -9,23 +9,26 @@ internal class ServersParserHostedService : BackgroundService
 {
     private readonly ILogger<ServersParserHostedService> _logger;
     private readonly IOptionsMonitor<List<RevitServerOpt>> _servers;
-    private readonly HttpClient _client;
+    private readonly IHttpClientFactory httpClientFactory;
     private readonly ParseResultService parseResultService;
     private readonly IServiceProvider serviceProvider;
+    private readonly HttpClient client;
 
     public bool InProcess { get; private set; }
     public DateTime LastParseTime { get; private set; }
     public ServersParserHostedService(ILogger<ServersParserHostedService> logger,
         IOptionsMonitor<List<RevitServerOpt>> servers,
-        HttpClient client,
+        IHttpClientFactory httpClientFactory,
         ParseResultService parseResultService,
         IServiceProvider serviceProvider)
     {
         _logger = logger;
         _servers = servers;
-        _client = client;
+        this.httpClientFactory = httpClientFactory;
         this.parseResultService = parseResultService;
         this.serviceProvider = serviceProvider;
+        client = httpClientFactory.CreateClient("def");
+
     }
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -38,11 +41,9 @@ internal class ServersParserHostedService : BackgroundService
 
             await DoWork(stoppingToken);
 #if DEBUG
-        using PeriodicTimer timer = new(TimeSpan.FromMinutes(1));
+            using PeriodicTimer timer = new(TimeSpan.FromMinutes(1));
 #else
             using PeriodicTimer timer = new(TimeSpan.FromMinutes(10));
-
-
 #endif
             while (await timer.WaitForNextTickAsync(stoppingToken))
             {
@@ -103,11 +104,23 @@ internal class ServersParserHostedService : BackgroundService
         if (servers == null)
             return Enumerable.Empty<RevitServer>().ToList();
 
-        var parsers = servers.Select(s => new ServerParser(s.Host, s.Year, _client)).ToList();
+        var parsers = servers.Select(s => new ServerParser(s.Host, s.Year, client)).ToList();
 
         var tasks = parsers.Select(x => x.ParseServer(3, stoppingToken)).ToList();
 
-        await Task.WhenAll(tasks);
+        var gt = Task.WhenAll(tasks);
+
+        try
+        {
+            await gt;
+        }
+        catch (Exception e)
+        {
+            _logger.LogError(e, e.ToString());
+        }
+
+        if (gt.Status != TaskStatus.RanToCompletion)
+            return Enumerable.Empty<RevitServer>().ToList();
 
         var results = tasks.Select(t => t.Result)
             .Where(x => x is not null && x.Folders?.Count > 0)

@@ -1,5 +1,6 @@
 using System.Text.Json.Serialization;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Net.Http.Headers;
 using RevitServersService;
 using RevitServersService.db;
 
@@ -11,17 +12,25 @@ builder.Services.AddDbContext<ServersDbContext>(opt
 
 
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddControllers().AddJsonOptions(o=>
+builder.Services.AddControllers().AddJsonOptions(o =>
 {
     o.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve;
 
 });
-
 builder.Services.AddSwaggerGen();
-builder.Services.AddHttpClient().ConfigureHttpClientDefaults(b =>
+
+builder.Services.AddHttpClient("def", httpClient =>
+{
+#if RELEASE
+    httpClient.Timeout = TimeSpan.FromMinutes(3);
+#endif
+});
+
+builder.Services.ConfigureHttpClientDefaults(b =>
 {
     b.RemoveAllLoggers();
 });
+
 
 builder.Services.AddOptions<List<RevitServerOpt>>()
     .Bind(builder.Configuration.GetSection("RevitServers"))
