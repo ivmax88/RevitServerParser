@@ -7,5 +7,3 @@
    var server = await parser.ParseServer();
 
    more details see in file HttpClientExtensions.cs or in Tests
-
-for net48 only Models are supported

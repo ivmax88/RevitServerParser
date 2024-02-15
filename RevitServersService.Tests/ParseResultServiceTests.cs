@@ -100,11 +100,12 @@ namespace RevitServersService.Tests
         }
 
         [Test]
-        public async Task GetModelInfoy()
+        public async Task GetModelInfo()
         {
             var result = await service.GetModelInfoAsync("srv4", 2022, "Жуков проезд|01_АР|OLP_R22_JKV_AK_01_AR_K00.rvt", CancellationToken.None);
 
-            Assert.That(result.DateModified, Is.GreaterThan(new DateTime(2000, 1,0)));
+            var date = new DateTime(2000, 1, 1);
+            Assert.That(result.DateModified, Is.GreaterThan(date));
         }
     }
 }

@@ -16,7 +16,8 @@
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.0" />
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.19.5" />
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.0" />
-    <PackageReference Include="olp.RevitServerParser" Version="1.6.0" />
+    <PackageReference Include="olp.RevitServerParser" Version="1.7.0" />
+    <PackageReference Include="olp.RevitServerParser.Core" Version="1.7.0" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
   </ItemGroup>
 

@@ -1,5 +1,4 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
     <TargetFrameworks>net8.0</TargetFrameworks>
 	<LangVersion>latest</LangVersion>
@@ -16,14 +15,10 @@
     <Product>olp.$(AssemblyName)</Product>
     <PackageTags>Olimproekt; olp</PackageTags>
     <PackageReadmeFile>README.md</PackageReadmeFile>
-    <AssemblyVersion>1.6.0</AssemblyVersion>
-    <FileVersion>1.6.0</FileVersion>
-	<VersionPrefix>1.6.0</VersionPrefix>
+    <AssemblyVersion>1.7.0</AssemblyVersion>
+    <FileVersion>1.7.0</FileVersion>
+	<VersionPrefix>1.7.0</VersionPrefix>
   </PropertyGroup>
-
-  <ItemGroup Condition=" '$(TargetFramework)' == 'net48' ">
-    <PackageReference Include="System.Text.Json" Version="8.0.1" />
-  </ItemGroup>
 
   <ItemGroup>
     <None Include="..\README.md">
@@ -33,7 +28,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\RevitServerParser.Core\RevitServerParser.Core.csproj" />
+    <PackageReference Include="olp.RevitServerParser.Core" Version="1.7.0" />
   </ItemGroup>
 
   <ItemGroup>

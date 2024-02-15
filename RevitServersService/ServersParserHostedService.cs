@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
-using RevitServerParser.Models;
+using RevitServerParser.Core;
 using RevitServerParser.Parser;
 using RevitServersService;
 using RevitServersService.db;

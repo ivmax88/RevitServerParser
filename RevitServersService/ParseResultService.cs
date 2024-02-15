@@ -1,6 +1,5 @@
 ﻿using RevitServerParser;
-using RevitServerParser.Models;
-using RevitServerParser.RevitServerModels;
+using RevitServerParser.Core;
 
 namespace RevitServersService
 {
