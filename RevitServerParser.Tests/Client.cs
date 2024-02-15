@@ -1,4 +1,6 @@
-﻿namespace RevitServerParser.Tests
+﻿using RevitServerParser.Core;
+
+namespace RevitServerParser.Tests
 {
     public class Client
     {

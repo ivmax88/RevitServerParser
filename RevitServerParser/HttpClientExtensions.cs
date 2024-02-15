@@ -1,8 +1,6 @@
-﻿#if NET8_0
-
-using System.Text.Json;
-using RevitServerParser.RevitServerModels;
-using static RevitServerParser.UtilsConstants;
+﻿using System.Text.Json;
+using RevitServerParser.Core;
+using static RevitServerParser.Core.UtilsConstants;
 
 namespace RevitServerParser
 {
@@ -39,7 +37,7 @@ namespace RevitServerParser
             return null;
         }
 
-        public static async Task<RevitServerModels.DirectoryInfo?> GetDirectoryInfo(this HttpClient client,
+        public static async Task<Core.DirectoryInfo?> GetDirectoryInfo(this HttpClient client,
            string host, int year, string path = "|", CancellationToken cancellationToken = default)
         {
             Checks(client);
@@ -47,7 +45,7 @@ namespace RevitServerParser
             if (response.StatusCode == System.Net.HttpStatusCode.OK)
             {
                 var stream = await response.Content.ReadAsStreamAsync(cancellationToken);
-                var result = await JsonSerializer.DeserializeAsync<RevitServerModels.DirectoryInfo>(stream, opts, cancellationToken);
+                var result = await JsonSerializer.DeserializeAsync<Core.DirectoryInfo>(stream, opts, cancellationToken);
                 return result;
             }
 
@@ -123,6 +121,3 @@ namespace RevitServerParser
         }
     }
 }
-
-
-#endif

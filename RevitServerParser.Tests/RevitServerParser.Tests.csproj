@@ -21,6 +21,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\RevitServerParser.Core\RevitServerParser.Core.csproj" />
     <ProjectReference Include="..\RevitServerParser\RevitServerParser.csproj" />
   </ItemGroup>
 

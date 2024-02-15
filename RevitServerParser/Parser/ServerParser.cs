@@ -1,5 +1,4 @@
-﻿#if NET8_0
-using RevitServerParser.Models;
+﻿using RevitServerParser.Core;
 
 namespace RevitServerParser.Parser
 {
@@ -66,4 +65,3 @@ namespace RevitServerParser.Parser
         }
     }
 }
-#endif
