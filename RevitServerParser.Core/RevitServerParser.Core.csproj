@@ -1,0 +1,22 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.1</TargetFramework>
+    <Nullable>enable</Nullable>
+      <LangVersion>latest</LangVersion>
+      <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+      <Title>Revit Server parser</Title>
+      <Authors>ivmax88</Authors>
+      <Description>Models to parse Revit Server</Description>
+      <RepositoryUrl>https://github.com/ivmax88/RevitServerParser</RepositoryUrl>
+      <PackageOutputPath>\\DISKSTATION\Производство\Ревит\REVIT_SETUP\12_Автоматизация\olp.nuget\olp.RevitServerParser.Core</PackageOutputPath>
+      <PackageId>olp.$(AssemblyName)</PackageId>
+      <PackageLicenseExpression>MIT</PackageLicenseExpression>
+      <Product>olp.$(AssemblyName)</Product>
+      <PackageTags>Olimproekt; olp</PackageTags>
+      <AssemblyVersion>1.7.0</AssemblyVersion>
+      <FileVersion>1.7.0</FileVersion>
+      <VersionPrefix>1.7.0</VersionPrefix>
+  </PropertyGroup>
+
+</Project>

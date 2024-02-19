@@ -17,8 +17,8 @@ async function getLastTime() {
     });
     if (response.ok === true) {
         const v = (await response.json());
-
-        document.querySelector("h2").innerHTML += String.prototype.concat(" | last time: ", v);
+        var date = new Date(Date.parse(v));
+        document.querySelector("h2").innerHTML += String.prototype.concat(" | last time: ", date.toLocaleDateString(), ' - ', date.toLocaleTimeString());
     }
 }
 

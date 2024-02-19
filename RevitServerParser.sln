@@ -13,7 +13,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RevitServersService", "Revi
 EndProject
 Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{DD9329F7-5950-498E-B971-6C5CD881D571}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RevitServerParser.Core", "..\RevitServerParser.Core\RevitServerParser.Core.csproj", "{13F5DC38-E26C-4059-858A-8D41CE68F9CC}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RevitServerParser.Core", "RevitServerParser.Core\RevitServerParser.Core.csproj", "{13F5DC38-E26C-4059-858A-8D41CE68F9CC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
