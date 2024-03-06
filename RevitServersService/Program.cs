@@ -40,8 +40,18 @@ builder.Services.AddOptions<List<RevitServerOpt>>()
 builder.Services.AddSingleton<ParseResultService>();
 builder.Services.AddHostedService<ServersParserHostedService>();
 
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("NewPolicy", builder =>
+     builder.AllowAnyOrigin()
+                  .AllowAnyMethod()
+                  .AllowAnyHeader());
+});
+
 var app = builder.Build();
 
+app.UseCors("NewPolicy");
 
 app.UseSwagger();
 app.UseSwaggerUI();
