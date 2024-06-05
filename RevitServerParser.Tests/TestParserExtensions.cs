@@ -94,6 +94,7 @@ namespace RevitServerParser.Tests
         }
         private static IEnumerable<object[]> Models()
         {
+            yield return new object[] { "srv2", 2020, "Котляковская", "00_КООРД", "OLP_R20_KTLK_BASE.rvt" };
             yield return new object[] { "srv1", 2019, "Тест", "01_АР", "ivanov_newtask_test_AR.rvt" };
         }
 

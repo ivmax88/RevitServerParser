@@ -21,9 +21,7 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddHttpClient("def", httpClient =>
 {
-#if RELEASE
-    httpClient.Timeout = TimeSpan.FromMinutes(3);
-#endif
+    httpClient.Timeout = TimeSpan.FromMinutes(5);
 });
 
 builder.Services.ConfigureHttpClientDefaults(b =>

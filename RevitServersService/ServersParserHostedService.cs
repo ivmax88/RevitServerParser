@@ -12,7 +12,6 @@ internal class ServersParserHostedService : BackgroundService
     private readonly IHttpClientFactory httpClientFactory;
     private readonly ParseResultService parseResultService;
     private readonly IServiceProvider serviceProvider;
-    private readonly HttpClient client;
 
     public bool InProcess { get; private set; }
     public DateTime LastParseTime { get; private set; }
@@ -27,7 +26,7 @@ internal class ServersParserHostedService : BackgroundService
         this.httpClientFactory = httpClientFactory;
         this.parseResultService = parseResultService;
         this.serviceProvider = serviceProvider;
-        client = httpClientFactory.CreateClient("def");
+       
 
     }
 
@@ -103,6 +102,9 @@ internal class ServersParserHostedService : BackgroundService
 
         if (servers == null)
             return Enumerable.Empty<RevitServer>().ToList();
+        var client = httpClientFactory.CreateClient("def");
+        client.Timeout = TimeSpan.FromMinutes(5);
+        _logger.LogInformation($"http client created. timeout: {client.Timeout}");
 
         var parsers = servers.Select(s => new ServerParser(s.Host, s.Year, client)).ToList();
 
@@ -134,7 +136,7 @@ internal class ServersParserHostedService : BackgroundService
         var result = new List<tempServer>();
 
 #if DEBUG
-        foreach (var server in _servers.CurrentValue.Skip(2))
+        foreach (var server in _servers.CurrentValue)
             foreach (var host in server.Hosts)
                 result.Add(new tempServer(host, server.Year));
 #else
